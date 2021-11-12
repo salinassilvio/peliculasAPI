@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using peliculasAPI.Entidades;
-using peliculasAPI.Entidades.Repositorio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,52 +12,43 @@ namespace peliculasAPI.Controllers
     [Route("api/generos")]
     public class GenerosController:ControllerBase
     {
-        private readonly IRepositorio repositorio;
-        public GenerosController(IRepositorio repositorio)
+        
+        public GenerosController()
         {
-            this.repositorio = repositorio;
+            
         }
 
         [HttpGet]
         public List<Genero> Get()
         {
-            return repositorio.ObtenerTodosLosGeneros();
+            return new List<Genero>() { new Genero()
+            {
+                Id=1, Nombre="Comedia"
+            } };
         }
 
         [HttpGet("{Id:int}")]
-        public async Task<ActionResult<Genero>> Get(int Id, [FromHeader] string nombre)
+        public async Task<ActionResult<Genero>> Get(int Id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var genero = await repositorio.ObtenerPorId(Id);
-
-            if(genero == null)
-            {
-                return NotFound();
-            }
-
-            return genero;
+            throw new NotImplementedException();
         }
 
         [HttpPost]
         public ActionResult Post()
         {
-            return NoContent();
+            throw new NotImplementedException();
         }
 
         [HttpPut]
         public ActionResult Put()
         {
-            return NoContent();
+            throw new NotImplementedException();
         }
 
         [HttpDelete]
         public ActionResult Delete()
         {
-            return NoContent();
+            throw new NotImplementedException();
         }
     }
 }
