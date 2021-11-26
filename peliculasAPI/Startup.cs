@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using peliculasAPI.ApiBehavior;
+using peliculasAPI.Filtros;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +29,14 @@ namespace peliculasAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddDbContext<AplicactionDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(ParsearBadRequest));
+            }).ConfigureApiBehaviorOptions(BehaviorBadRequests.Parsear);
+
             services.AddCors(options =>
             {
                 var frontendURL = Configuration.GetValue<string>("frontend_url");
