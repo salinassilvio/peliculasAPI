@@ -1,8 +1,10 @@
 ﻿
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using peliculasAPI.DTOs;
 using peliculasAPI.Entidades;
 using System;
 using System.Collections.Generic;
@@ -17,18 +19,23 @@ namespace peliculasAPI.Controllers
     {
         private readonly AplicactionDbContext context;
         private readonly ILogger<GenerosController> logger;
+        private readonly IMapper mapper;
 
-        public GenerosController(ILogger<GenerosController> logger,AplicactionDbContext context)
+        public GenerosController(ILogger<GenerosController> logger,
+            AplicactionDbContext context,
+            IMapper mapper
+            )
         {
             this.context = context;
             this.logger = logger;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Genero>>> Get()
+        public async Task<ActionResult<List<GeneroDTO>>> Get()
         {
-            logger.LogInformation("Vamos a mostrar los Generos");
-            return await context.Generos.ToListAsync();
+            var generos = await context.Generos.ToListAsync();            
+            return mapper.Map<List<GeneroDTO>>(generos);
         }
 
         [HttpGet("{Id:int}")]
@@ -39,8 +46,9 @@ namespace peliculasAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Genero genero)
+        public async Task<ActionResult> Post([FromBody] GeneroCreacionDTO generoCreacionDTO)
         {
+            var genero = mapper.Map<Genero>(generoCreacionDTO);
             context.Add(genero);
             await context.SaveChangesAsync();
             return NoContent();
