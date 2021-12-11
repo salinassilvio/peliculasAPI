@@ -44,7 +44,7 @@ namespace peliculasAPI
                 options.AddDefaultPolicy(builder =>
                 {
                     builder.WithOrigins(frontendURL).AllowAnyMethod().AllowAnyHeader()
-                    .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
+                    .WithExposedHeaders(new string[] { "cantidadTotalRegistro" });
                 });
             });
             services.AddSwaggerGen(c =>
