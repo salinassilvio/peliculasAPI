@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using peliculasAPI;
 
 namespace peliculasAPI.Migrations
 {
     [DbContext(typeof(AplicactionDbContext))]
-    partial class AplicactionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211221044951_Actores")]
+    partial class Actores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

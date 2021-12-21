@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace peliculasAPI
 {
-    public class AplicactionDbContext:DbContext
+    public class AplicactionDbContext : DbContext
     {
-        public AplicactionDbContext(DbContextOptions options):base(options)
+        public AplicactionDbContext(DbContextOptions options) : base(options)
         {
 
         }
 
         public DbSet<Genero> Generos { get; set; }
+        public DbSet<Actor> Actores { get; set; }
     }
 
 }
