@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using peliculasAPI.DTOs;
 using peliculasAPI.Entidades;
+using peliculasAPI.Utilidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,15 @@ namespace peliculasAPI.Controllers
         {
             this.context = context;
             this.mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ActorDTO>>> Get([FromQuery] PaginacionDTO paginacionDTO)
+        {
+            var queryable = context.Actores.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacionEncabecera(queryable);
+            var actores = await queryable.OrderBy(x => x.Nombre).Paginar(paginacionDTO).ToListAsync();
+            return mapper.Map<List<ActorDTO>>(actores);
         }
 
         [HttpPost]
