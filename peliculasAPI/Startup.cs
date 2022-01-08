@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,8 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 using peliculasAPI.ApiBehavior;
 using peliculasAPI.Filtros;
+using peliculasAPI.Utilidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +34,23 @@ namespace peliculasAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddSingleton(provider =>      
+                new MapperConfiguration(config => 
+                {
+                    var geometryFactory = provider.GetRequiredService<GeometryFactory>();
+                    config.AddProfile(new AutoMapperProfiles(geometryFactory));
+                }).CreateMapper());          
+
+            services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326));
+
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
+
+            services.AddHttpContextAccessor();
+
             services.AddDbContext<AplicactionDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"),
+                sqlServer => sqlServer.UseNetTopologySuite()));
 
             services.AddControllers(options =>
             {
@@ -64,6 +83,8 @@ namespace peliculasAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
 
